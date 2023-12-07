@@ -163,6 +163,8 @@ always@(posedge clk or negedge rst)
 		S <= START;
 	else
 		S <= NS;
+
+// Switch cases logic.
 		
 always@(*)
 	case(S)
@@ -287,7 +289,8 @@ always@(*)
 		default: NS = ERROR;
 				
 	endcase
-		
+
+// What happens in each case.
 
 always@(posedge clk or negedge rst)
 	if (rst == 1'b0)
