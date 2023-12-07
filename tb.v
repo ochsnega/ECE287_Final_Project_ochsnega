@@ -89,7 +89,7 @@ module tb;
 	reg clk;
 	reg rst;
 	reg en;
-	reg [3:0] disp_control;
+	reg [4:0] disp_control;
 	wire done;
 	wire LU_error_ovf;
 	wire LU_error_dbz;
@@ -133,7 +133,7 @@ module tb;
 		#(simdelay) rst = 1'b0; clk = 1'b0; step_val = 8'd0;
 		#(simdelay) rst = 1'b1; /* go into normal circuit operation */ 
 		
-		/* start */ #(simdelay) en = 1'b1; disp_control = 4'b0011;
+		/* start */ #(simdelay) en = 1'b1; disp_control = 5'd00011;
 		end
 	
 	/* this checks done every clock and when it goes high ends the simulation */

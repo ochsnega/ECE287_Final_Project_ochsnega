@@ -57,49 +57,49 @@ reg [15:0] Xin;
 
 always@(*)
 begin
-	A00 = 16'h0040; //4
-	A01 = 16'h80; //8
+	A00 = 16'h10; //1
+	A01 = 16'h10; //1
 	A02 = 16'h10; //1
-	A10 = 16'h0010; //1
-	A11 = 16'h70; //7
-	A12 = 16'hFFD0; //-3
-	A20 = 16'h20; //2
-	A21 = 16'hFFD0; //-3
+	A10 = 16'h60; //6
+	A11 = 16'hFFC0; //-4
+	A12 = 16'h50; //5
+	A20 = 16'h50; //5
+	A21 = 16'h20; //2
 	A22 = 16'h20; //2
-	C0 = 16'h20; //2 //Expected results: (-3, 1, 6)
-	C1 = 16'hFF20; //-14
-	C2 = 16'h20; //2
+	C0 = 16'h20; //2 //Expected results: (3, -2, 1)
+	C1 = 16'h1F0; //31
+	C2 = 16'hD0; //13
 end
 
-LU_Decomposition my_solver (clk, rst, LU_en, A00, A01, A02, A10, A11, A12, A20, A21, A22, C0, C1, C2, X0, X1, X2, L10, L20, L21, U11, U12, U22, Z1, Z2, LU_done, LU_error_ovf, LU_error_dbz, LU_error_FSM, test);
+LU_Decomposition_parallel my_solver (clk, rst, LU_en, A00, A01, A02, A10, A11, A12, A20, A21, A22, C0, C1, C2, X0, X1, X2, L10, L20, L21, U11, U12, U22, Z1, Z2, LU_done, LU_error_ovf, LU_error_dbz, LU_error_FSM, test);
 
 always@(*)
 begin
 	case (disp_control)
-		5'b0000: Xin = X0;
-		5'b0001: Xin = X1;
-		5'b0010: Xin = X2;
-		5'b0011: Xin = L10;
-		5'b0100: Xin = L20;
-		5'b0101: Xin = L21;
-		5'b0110: Xin = U11;
-		5'b0111: Xin = U12;
-		5'b1000: Xin = U22;
-		5'b1001: Xin = Z1;
-		5'b1010: Xin = Z2;
-		5'b1011: Xin = A00;
-		5'b1100: Xin = A01;
-		5'b1101: Xin = A02;
-		5'b1110: Xin = A10;
-		5'b10001: Xin = A11;
-		5'b10010: Xin = A12;
-		5'b10011: Xin = A20;
-		5'b10100: Xin = A21;
-		5'b10101: Xin = A22;
-		5'b10110: Xin = C0;
-		5'b10111: Xin = C1;
+		5'b00000: Xin = X0;
+		5'b00001: Xin = X1;
+		5'b00010: Xin = X2;
+		5'b00011: Xin = L10;
+		5'b00100: Xin = L20;
+		5'b00101: Xin = L21;
+		5'b00110: Xin = U11;
+		5'b00111: Xin = U12;
+		5'b01000: Xin = U22;
+		5'b01001: Xin = Z1;
+		5'b01010: Xin = Z2;
+		5'b01011: Xin = A00;
+		5'b01100: Xin = A01;
+		5'b01101: Xin = A02;
+		5'b01110: Xin = A10;
+		5'b01111: Xin = A11;
+		5'b10000: Xin = A12;
+		5'b10001: Xin = A20;
+		5'b10010: Xin = A21;
+		5'b10011: Xin = A22;
+		5'b10100: Xin = C0;
+		5'b10101: Xin = C1;
 		5'b11000: Xin = C2;
-		default: Xin = 16'h10;
+		default: Xin = 16'h0FF0;
 	endcase
 end
 

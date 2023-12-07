@@ -32,14 +32,14 @@ begin
 	else
 		twos_comp = val;
 		
-	result_tenth_milli = (twos_comp[3:0] * 12'd625) % 4'd10;
-	result_milli = ((twos_comp[3:0] * 12'd625) / 12'd10) % 4'd10; 
-	result_centi = ((twos_comp[3:0] * 12'd625) / 12'd100) % 4'd10;
-	result_tenth = ((twos_comp[3:0] * 12'd625) / 12'd1000) % 4'd10;
-	result_one = twos_comp[15:4] % 12'd10;
-	result_ten = (twos_comp[15:4] / 12'd10) % 12'd10;
-	result_hundred = (twos_comp[15:4] / 12'd100) % 12'd10;
-	result_thousand = (twos_comp[15:4] / 12'd1000) % 12'd10;
+	result_tenth_milli = (twos_comp[3:0] * 16'd625) % 4'd10;
+	result_milli = ((twos_comp[3:0] * 16'd625) / 16'd10) % 4'd10; 
+	result_centi = ((twos_comp[3:0] * 16'd625) / 16'd100) % 4'd10;
+	result_tenth = ((twos_comp[3:0] * 16'd625) / 16'd1000) % 4'd10;
+	result_one = twos_comp[15:4] % 16'd10;
+	result_ten = (twos_comp[15:4] / 16'd10) % 16'd10;
+	result_hundred = (twos_comp[15:4] / 16'd100) % 16'd10;
+	result_thousand = (twos_comp[15:4] / 16'd1000) % 16'd10;
 	
 end
 
