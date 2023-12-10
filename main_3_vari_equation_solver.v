@@ -20,7 +20,9 @@ module main_3_vari_equation_solver (
 	output [6:0] seg7_tenth,
 	output [6:0] seg7_centi,
 	output [6:0] seg7_milli,
-	output [6:0] seg7_tenth_milli
+	output [6:0] seg7_tenth_milli,
+	output reg [5:0] S_K2N,
+	output reg [5:0] S
 );
 
 //Get Keyboard Input
@@ -46,7 +48,6 @@ parameter NUM_PAD_0 = 8'h70,
 
 reg [3:0] keyboard_num;
 reg keyboard_minus;
-reg keyboard_invalid;
 reg keyboard_enter;
 reg keyboard_proceed; //Control signal for CALC states in K2N
 reg keyboard_continue; //Control signal for WAIT states in K2N
@@ -56,7 +57,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 	begin
 		keyboard_num <= 4'b0;
 		keyboard_minus <= 1'b0;
-		keyboard_invalid <= 1'b0;
 		keyboard_enter <= 1'b0;
 		keyboard_proceed <= 1'b0;
 		keyboard_continue <= 1'b0;
@@ -67,7 +67,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd0;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -76,7 +75,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd1;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -85,7 +83,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd2;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -94,7 +91,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd3;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -103,7 +99,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd4;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -112,7 +107,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd5;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -121,7 +115,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd6;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -130,7 +123,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd7;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -139,7 +131,6 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd8;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
@@ -148,54 +139,32 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 			begin
 				keyboard_num <= 4'd9;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b1;
 			end 
 			NUM_PAD_MINUS:
 			begin
-				keyboard_num <= 4'd0;
+//				keyboard_num <= 4'd0;
 				keyboard_minus <= 1'b1;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b0;
 			end 
 			NUM_PAD_ENTER:
 			begin
-				keyboard_num <= 4'd0;
+//				keyboard_num <= 4'd0;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
 				keyboard_enter <= 1'b1;
 				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b0;
 			end 
 			NUM_PAD_PLUS:
 			begin
-				keyboard_num <= 4'd0;
+//				keyboard_num <= 4'd0;
 				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
-				keyboard_enter <= 1'b1;
+				keyboard_enter <= 1'b0;
 				keyboard_proceed <= 1'b1;
-				keyboard_continue <= 1'b0;
-			end 
-			8'h0: 
-			begin
-				keyboard_num <= 4'd0;
-				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b0;
-				keyboard_enter <= 1'b0;
-				keyboard_proceed <= 1'b0;
-				keyboard_continue <= 1'b0;
-			end 
-			default:
-			begin
-				keyboard_num <= 4'd0;
-				keyboard_minus <= 1'b0;
-				keyboard_invalid <= 1'b1;
-				keyboard_enter <= 1'b0;
-				keyboard_proceed <= 1'b0;
 				keyboard_continue <= 1'b0;
 			end 
 		endcase
@@ -204,12 +173,14 @@ always@(posedge clk or negedge rst) //Interprets the results of a keyboard press
 //FSM For Keyboard to 16 Bit Number
 
 reg [15:0] k2n_number;
-reg [15:0] k2n_abs;
+reg [31:0] k2n_abs;
 reg [3:0] k2n_digit;
+reg k2n_calc_done;
+reg k2n_minus_done;
 reg k2n_is_negative;
 reg k2n_done;
 
-reg [5:0] S_K2N;
+//reg [5:0] S_K2N;
 reg [5:0] NS_K2N;
 
 parameter START_K2N = 6'd0,
@@ -241,18 +212,14 @@ always@(*)
 	case (S_K2N)
 		START_K2N:
 		begin
-			if (k2n_en == 1'b1)
+			if (k2n_en == 1'b1 & keyboard_proceed == 1'b1)
 				NS_K2N = WAIT_THOUSAND;
 			else
 				NS_K2N = START_K2N;
 		end
 		WAIT_THOUSAND:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_enter)
-				NS_K2N = DONE_K2N;
-			else if (keyboard_minus)
+			if (keyboard_minus)
 				NS_K2N = MINUS_THOUSAND;
 			else if (keyboard_continue)
 				NS_K2N = CALC_THOUSAND;
@@ -261,23 +228,23 @@ always@(*)
 		end
 		CALC_THOUSAND:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_enter)
+			if (keyboard_enter)
 				NS_K2N = DONE_K2N;
 			else if (keyboard_proceed)
 				NS_K2N = WAIT_HUNDRED;
 			else
 				NS_K2N = CALC_THOUSAND;
 		end
-		MINUS_THOUSAND: NS_K2N = WAIT_THOUSAND;
+		MINUS_THOUSAND:
+		begin
+			if (keyboard_proceed)
+				NS_K2N = WAIT_THOUSAND;
+			else
+				NS_K2N = MINUS_THOUSAND;
+		end
 		WAIT_HUNDRED:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_enter)
-				NS_K2N = DONE_K2N;
-			else if (keyboard_minus)
+			if (keyboard_minus)
 				NS_K2N = MINUS_HUNDRED;
 			else if (keyboard_continue)
 				NS_K2N = CALC_HUNDRED;
@@ -286,23 +253,23 @@ always@(*)
 		end
 		CALC_HUNDRED:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_enter)
+			if (keyboard_enter)
 				NS_K2N = DONE_K2N;
 			else if (keyboard_proceed)
 				NS_K2N = WAIT_TEN;
 			else
 				NS_K2N = CALC_HUNDRED;
 		end
-		MINUS_HUNDRED: NS_K2N = WAIT_HUNDRED;
+		MINUS_HUNDRED:
+		begin
+			if (keyboard_proceed)
+				NS_K2N = WAIT_HUNDRED;
+			else
+				NS_K2N = MINUS_HUNDRED;
+		end
 		WAIT_TEN:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_enter)
-				NS_K2N = DONE_K2N;
-			else if (keyboard_minus)
+			if (keyboard_minus)
 				NS_K2N = MINUS_TEN;
 			else if (keyboard_continue)
 				NS_K2N = CALC_TEN;
@@ -311,23 +278,23 @@ always@(*)
 		end
 		CALC_TEN:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_enter)
+			if (keyboard_enter)
 				NS_K2N = DONE_K2N;
 			else if (keyboard_proceed)
 				NS_K2N = WAIT_ONE;
 			else
 				NS_K2N = CALC_TEN;
 		end
-		MINUS_TEN: NS_K2N = WAIT_TEN;
+		MINUS_TEN:
+		begin
+			if (keyboard_proceed)
+				NS_K2N = WAIT_TEN;
+			else
+				NS_K2N = MINUS_TEN;
+		end
 		WAIT_ONE:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_enter)
-				NS_K2N = DONE_K2N;
-			else if (keyboard_minus)
+			if (keyboard_minus)
 				NS_K2N = MINUS_ONE;
 			else if (keyboard_continue)
 				NS_K2N = CALC_ONE;
@@ -336,9 +303,7 @@ always@(*)
 		end
 		CALC_ONE:
 		begin
-			if (keyboard_invalid)
-				NS_K2N = START_K2N;
-			else if (keyboard_overflow)
+			if (keyboard_overflow)
 				NS_K2N = START_K2N;
 			else if (keyboard_enter)
 				NS_K2N = DONE_K2N;
@@ -347,7 +312,13 @@ always@(*)
 			else
 				NS_K2N = CALC_ONE;
 		end
-		MINUS_ONE: NS_K2N = WAIT_ONE;
+		MINUS_ONE:
+		begin
+			if (keyboard_proceed)
+				NS_K2N = WAIT_ONE;
+			else
+				NS_K2N = MINUS_ONE;
+		end
 		DONE_K2N:
 		begin
 			if (k2n_en == 1'b0)
@@ -364,33 +335,44 @@ always@(posedge clk or negedge rst)
 	if (rst == 1'b0)
 	begin
 		k2n_number <= 16'b0;
-		k2n_abs <= 16'b0;
+		k2n_abs <= 32'b0;
 		k2n_digit <= 4'b0;
 		k2n_is_negative <= 1'b0;
 		k2n_done <= 1'b0;
 		keyboard_overflow <= 1'b0;
 		keyboard_at_start <= 1'b0;
+		k2n_calc_done <= 1'b0;
+		k2n_minus_done <= 1'b0;
 	end
 	else
 		case (S_K2N)
 			START_K2N:
 			begin
 				k2n_number <= 16'b0;
-				k2n_abs <= 20'b0;
+				k2n_abs <= 32'b0;
 				k2n_digit <= 4'b0;
 				k2n_is_negative <= 1'b0;
 				k2n_done <= 1'b0;
 				keyboard_overflow <= 1'b0;
 				keyboard_at_start <= 1'b1;
+				k2n_calc_done <= 1'b0;
+				k2n_minus_done <= 1'b0;
 			end
 			WAIT_THOUSAND:
 			begin
-				keyboard_at_start <= 1'b0;
 				k2n_digit <= keyboard_num;
+				keyboard_at_start <= 1'b0;
+				k2n_calc_done <= 1'b0;
+				k2n_minus_done <= 1'b0;
 			end
 			CALC_THOUSAND:
 			begin
-				k2n_abs[7:4] <= k2n_digit;
+				if (k2n_calc_done == 1'b0)
+				begin
+					k2n_abs[7:4] <= k2n_digit;
+					k2n_calc_done <= 1'b1;
+				end
+				keyboard_at_start <= 1'b0;
 				if (k2n_is_negative)
 				begin
 					k2n_number <= 17'h10000 - k2n_abs[15:0];
@@ -402,15 +384,25 @@ always@(posedge clk or negedge rst)
 			end
 			MINUS_THOUSAND:
 			begin
-				k2n_is_negative <= !k2n_is_negative;
+				if (k2n_minus_done == 1'b0)
+				begin
+					k2n_is_negative <= !k2n_is_negative;
+					k2n_minus_done <= 1'b1;
+				end
 			end
 			WAIT_HUNDRED:
 			begin
 				k2n_digit <= keyboard_num;
+				k2n_calc_done <= 1'b0;
+				k2n_minus_done <= 1'b0;
 			end
 			CALC_HUNDRED:
 			begin
-				k2n_abs <= (k2n_abs * 10) + k2n_digit;
+				if (k2n_calc_done == 1'b0)
+				begin
+					k2n_abs[31:4] <= k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_digit;
+					k2n_calc_done <= 1'b1;
+				end
 				if (k2n_is_negative)
 				begin
 					k2n_number <= 17'h10000 - k2n_abs[15:0];
@@ -422,15 +414,25 @@ always@(posedge clk or negedge rst)
 			end
 			MINUS_HUNDRED:
 			begin
-				k2n_is_negative <= !k2n_is_negative;
+				if (k2n_minus_done == 1'b0)
+				begin
+					k2n_is_negative <= !k2n_is_negative;
+					k2n_minus_done <= 1'b1;
+				end
 			end
 			WAIT_TEN:
 			begin
 				k2n_digit <= keyboard_num;
+				k2n_calc_done <= 1'b0;
+				k2n_minus_done <= 1'b0;
 			end
 			CALC_TEN:
 			begin
-				k2n_abs <= (k2n_abs * 10) + k2n_digit;
+				if (k2n_calc_done == 1'b0)
+				begin
+					k2n_abs[31:4] <= k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_digit;
+					k2n_calc_done <= 1'b1;
+				end
 				if (k2n_is_negative)
 				begin
 					k2n_number <= 17'h10000 - k2n_abs[15:0];
@@ -442,15 +444,25 @@ always@(posedge clk or negedge rst)
 			end
 			MINUS_TEN:
 			begin
-				k2n_is_negative <= !k2n_is_negative;
+				if (k2n_minus_done == 1'b0)
+				begin
+					k2n_is_negative <= !k2n_is_negative;
+					k2n_minus_done <= 1'b1;
+				end
 			end
 			WAIT_ONE:
 			begin
 				k2n_digit <= keyboard_num;
+				k2n_calc_done <= 1'b0;
+				k2n_minus_done <= 1'b0;
 			end
 			CALC_ONE:
 			begin
-				k2n_abs <= (k2n_abs * 10) + k2n_digit;
+				if (k2n_calc_done == 1'b0)
+				begin
+					k2n_abs[31:4] <= k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_abs[15:4] + k2n_digit;
+					k2n_calc_done <= 1'b1;
+				end
 				if (k2n_is_negative)
 				begin
 					k2n_number <= 17'h10000 - k2n_abs[15:0];
@@ -459,16 +471,23 @@ always@(posedge clk or negedge rst)
 				begin
 					k2n_number <= k2n_abs[15:0];
 				end
-				if (13'h1000 < k2n_abs)
+				if (17'h10000 < k2n_abs)
 					keyboard_overflow <= 1'b1;
 			end
 			MINUS_ONE:
 			begin
-				k2n_is_negative <= !k2n_is_negative;
+				if (k2n_minus_done == 1'b0)
+				begin
+					k2n_is_negative <= !k2n_is_negative;
+					k2n_minus_done <= 1'b1;
+				end
 			end
 			DONE_K2N:
 			begin
 				k2n_done <= 1'b1;
+				keyboard_at_start <= 1'b0;
+				k2n_calc_done <= 1'b0;
+				k2n_minus_done <= 1'b0;
 			end
 		endcase
 		
@@ -562,37 +581,59 @@ twelve_four_fixed_decimal_w_neg to_decimal(Xin, seg7_neg_sign, seg7_thousand, se
 
 reg k2n_en;
 
-reg [4:0] S;
-reg [4:0] NS;
+// reg [5:0] S;
+reg [5:0] NS;
 
-parameter START_MAIN = 5'd0,
-			 GET_A00 = 5'd1,
-			 STORE_A00 = 5'd15,
-			 GET_A01 = 5'd2,
-			 STORE_A01 = 5'd16,
-			 GET_A02 = 5'd3,
-			 STORE_A02 = 5'd17,
-			 GET_A10 = 5'd4,
-			 STORE_A10 = 5'd18,
-			 GET_A11 = 5'd5,
-			 STORE_A11 = 5'd19,
-			 GET_A12 = 5'd6,
-			 STORE_A12 = 5'd20,
-			 GET_A20 = 5'd7,
-			 STORE_A20 = 5'd21,
-			 GET_A21 = 5'd8,
-			 STORE_A21 = 5'd22,
-			 GET_A22 = 5'd9,
-			 STORE_A22 = 5'd23,
-			 GET_C0 = 5'd10,
-			 STORE_C0 = 5'd24,
-			 GET_C1 = 5'd11,
-			 STORE_C1 = 5'd25,
-			 GET_C2 = 5'd12,
-			 STORE_C2 = 5'd26,
-			 CALCULATE = 5'd13,
-			 DONE_MAIN = 5'd14,
-			 ERROR_MAIN = 5'b11111;
+parameter START_MAIN = 6'd0,
+			 GET_A00 = 6'd1,
+			 STORE_A00 = 6'd15,
+			 WAIT1_A00 = 6'd27,
+			 WAIT2_A00 = 6'd28,
+			 GET_A01 = 6'd2,
+			 STORE_A01 = 6'd16,
+			 WAIT1_A01 = 6'd29,
+			 WAIT2_A01 = 6'd30,
+			 GET_A02 = 6'd3,
+			 STORE_A02 = 6'd17,
+			 WAIT1_A02 = 6'd31,
+			 WAIT2_A02 = 6'd32,
+			 GET_A10 = 6'd4,
+			 STORE_A10 = 6'd18,
+			 WAIT1_A10 = 6'd33,
+			 WAIT2_A10 = 6'd34,
+			 GET_A11 = 6'd5,
+			 STORE_A11 = 6'd19,
+			 WAIT1_A11 = 6'd35,
+			 WAIT2_A11 = 6'd36,
+			 GET_A12 = 6'd6,
+			 STORE_A12 = 6'd20,
+			 WAIT1_A12 = 6'd37,
+			 WAIT2_A12 = 6'd38,
+			 GET_A20 = 6'd7,
+			 STORE_A20 = 6'd21,
+			 WAIT1_A20 = 6'd39,
+			 WAIT2_A20 = 6'd40,
+			 GET_A21 = 6'd8,
+			 STORE_A21 = 6'd22,
+			 WAIT1_A21 = 6'd41,
+			 WAIT2_A21 = 6'd42,
+			 GET_A22 = 6'd9,
+			 STORE_A22 = 6'd23,
+			 WAIT1_A22 = 6'd43,
+			 WAIT2_A22 = 6'd44,
+			 GET_C0 = 6'd10,
+			 STORE_C0 = 6'd24,
+			 WAIT1_C0 = 6'd45,
+			 WAIT2_C0 = 6'd46,
+			 GET_C1 = 6'd11,
+			 STORE_C1 = 6'd25,
+			 WAIT1_C1 = 6'd47,
+			 WAIT2_C1 = 6'd48,
+			 GET_C2 = 6'd12,
+			 STORE_C2 = 6'd26,
+			 CALCULATE = 6'd13,
+			 DONE_MAIN = 6'd14,
+			 ERROR_MAIN = 6'b111111;
 			 
 always@(posedge clk or negedge rst)
 	if (rst == 1'b0)
@@ -613,67 +654,89 @@ always@(*)
 				NS = STORE_A00;
 			else
 				NS = GET_A00;
-		STORE_A00: NS = GET_A01;
+		STORE_A00: NS = WAIT1_A00;
+		WAIT1_A00: NS = WAIT2_A00;
+		WAIT2_A00: NS = GET_A01;
 		GET_A01:
 			if (k2n_done)
 				NS = STORE_A01;
 			else
 				NS = GET_A01;
-		STORE_A01: NS = GET_A02;
+		STORE_A01: NS = WAIT1_A01;
+		WAIT1_A01: NS = WAIT2_A01;
+		WAIT2_A01: NS = GET_A02;
 		GET_A02:
 			if (k2n_done)
 				NS = STORE_A02;
 			else
 				NS = GET_A02;
-		STORE_A02: NS = GET_A10;
+		STORE_A02: NS = WAIT1_A02;
+		WAIT1_A02: NS = WAIT2_A02;
+		WAIT2_A02: NS = GET_A10;
 		GET_A10:
 			if (k2n_done)
 				NS = STORE_A10;
 			else
 				NS = GET_A10;
-		STORE_A10: NS = GET_A11;
+		STORE_A10: NS = WAIT1_A10;
+		WAIT1_A10: NS = WAIT2_A10;
+		WAIT2_A10: NS = GET_A11;
 		GET_A11:
 			if (k2n_done)
 				NS = STORE_A11;
 			else
 				NS = GET_A11;
-		STORE_A11: NS = GET_A12;
+		STORE_A11: NS = WAIT1_A11;
+		WAIT1_A11: NS = WAIT2_A11;
+		WAIT2_A11: NS = GET_A12;
 		GET_A12:
 			if (k2n_done)
 				NS = STORE_A12;
 			else
 				NS = GET_A12;
-		STORE_A12: NS = GET_A20;
+		STORE_A12: NS = WAIT1_A12;
+		WAIT1_A12: NS = WAIT2_A12;
+		WAIT2_A12: NS = GET_A20;
 		GET_A20:
 			if (k2n_done)
 				NS = STORE_A20;
 			else
 				NS = GET_A20;
-		STORE_A20: NS = GET_A21;
+		STORE_A20: NS = WAIT1_A20;
+		WAIT1_A20: NS = WAIT2_A20;
+		WAIT2_A20: NS = GET_A21;
 		GET_A21: 
 			if (k2n_done)
 				NS = STORE_A21;
 			else
 				NS = GET_A21;
-		STORE_A21: NS = GET_A22;
+		STORE_A21: NS = WAIT1_A21;
+		WAIT1_A21: NS = WAIT2_A21;
+		WAIT2_A21: NS = GET_A22;
 		GET_A22:
 			if (k2n_done)
 				NS = STORE_A22;
 			else
-				NS = GET_A11;
-		STORE_A22: NS = GET_C0;
+				NS = GET_A22;
+		STORE_A22: NS = WAIT1_A22;
+		WAIT1_A22: NS = WAIT2_A22;
+		WAIT2_A22: NS = GET_C0;
 		GET_C0:
 			if (k2n_done)
 				NS = STORE_C0;
 			else
 				NS = GET_C0;
-		STORE_C0: NS = GET_C1;
+		STORE_C0: NS = WAIT1_C0;
+		WAIT1_C0: NS = WAIT2_C0;
+		WAIT2_C0: NS = GET_C1;
 		GET_C1: 
 			if (k2n_done)
 				NS = STORE_C1;
 			else
 				NS = GET_C1;
-		STORE_C1: NS = GET_C2;
+		STORE_C1: NS = WAIT1_C1;
+		WAIT1_C1: NS = WAIT2_C1;
+		WAIT2_C1: NS = GET_C2;
 		GET_C2:
 			if (k2n_done)
 				NS = STORE_C2;
@@ -743,12 +806,28 @@ always@(posedge clk or negedge rst)
 				begin
 					k2n_en <= 1'b0;
 				end
+				WAIT1_A00:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A00:
+				begin
+					k2n_en <= 1'b0;
+				end
 				GET_A01:
 				begin
 					k2n_en <= 1'b1;
 					A01 <= k2n_number;
 				end
 				STORE_A01:
+				begin
+					k2n_en <= 1'b0;
+				end
+				WAIT1_A01:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A01:
 				begin
 					k2n_en <= 1'b0;
 				end
@@ -761,6 +840,14 @@ always@(posedge clk or negedge rst)
 				begin
 					k2n_en <= 1'b0;
 				end
+				WAIT1_A02:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A02:
+				begin
+					k2n_en <= 1'b0;
+				end
 				GET_A10:
 				begin
 					k2n_en <= 1'b1;
@@ -770,12 +857,28 @@ always@(posedge clk or negedge rst)
 				begin
 					k2n_en <= 1'b0;
 				end
+				WAIT1_A10:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A10:
+				begin
+					k2n_en <= 1'b0;
+				end
 				GET_A11:
 				begin
 					k2n_en <= 1'b1;
-					A10 <= k2n_number;
+					A11 <= k2n_number;
 				end
 				STORE_A11:
+				begin
+					k2n_en <= 1'b0;
+				end
+				WAIT1_A11:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A11:
 				begin
 					k2n_en <= 1'b0;
 				end
@@ -786,6 +889,14 @@ always@(posedge clk or negedge rst)
 				end
 				STORE_A12:
 				begin
+				WAIT1_A12:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A12:
+				begin
+					k2n_en <= 1'b0;
+				end
 					k2n_en <= 1'b0;
 				end
 				GET_A20:
@@ -794,6 +905,14 @@ always@(posedge clk or negedge rst)
 					A20 <= k2n_number;
 				end
 				STORE_A20:
+				begin
+					k2n_en <= 1'b0;
+				end
+				WAIT1_A20:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A20:
 				begin
 					k2n_en <= 1'b0;
 				end
@@ -806,12 +925,28 @@ always@(posedge clk or negedge rst)
 				begin
 					k2n_en <= 1'b0;
 				end
+				WAIT1_A21:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A21:
+				begin
+					k2n_en <= 1'b0;
+				end
 				GET_A22:
 				begin
 					k2n_en <= 1'b1;
 					A22 <= k2n_number;
 				end
 				STORE_A22:
+				begin
+					k2n_en <= 1'b0;
+				end
+				WAIT1_A22:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_A22:
 				begin
 					k2n_en <= 1'b0;
 				end
@@ -824,12 +959,28 @@ always@(posedge clk or negedge rst)
 				begin
 					k2n_en <= 1'b0;
 				end
+				WAIT1_C0:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_C0:
+				begin
+					k2n_en <= 1'b0;
+				end
 				GET_C1:
 				begin
 					k2n_en <= 1'b1;
 					C1 <= k2n_number;
 				end
 				STORE_C1:
+				begin
+					k2n_en <= 1'b0;
+				end
+				WAIT1_C1:
+				begin
+					k2n_en <= 1'b1;
+				end
+				WAIT2_C1:
 				begin
 					k2n_en <= 1'b0;
 				end
